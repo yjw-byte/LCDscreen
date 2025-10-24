@@ -89,21 +89,11 @@ int main(void)
   MX_GPIO_Init();
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
-  LCD_Init();            // 初始化LCD
-  LCD_Clear(WHITE);      // 清屏为白色
-  HAL_Delay(1000);       // 延时1秒
   
-  // 显示一些颜色
-  LCD_Clear(RED);
-  HAL_Delay(1000);
+  // 初始化LCD
+  LCD_Init_HAL();
+  LCD_Fill(0, 0, 128, 160, WHITE);
   
-  LCD_Clear(GREEN);
-  HAL_Delay(1000);
-  
-  LCD_Clear(BLUE);
-  HAL_Delay(1000);
-  
-  LCD_Clear(WHITE);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -113,26 +103,40 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    // 先清屏为白色
-    LCD_Clear(WHITE);
+    // 测试我们新编写的HAL库函数
+    
+    // 清屏为白色
+    LCD_Fill(0, 0, 128, 160, RED);
     HAL_Delay(1000);
-    
-    // 在屏幕中央显示一个黑色方块
-    LCD_SetWindows(30, 60, 90, 100);
-    // LCD_WriteRAM_Prepare();  // 不需要重复调用，因为LCD_SetWindows中已经调用了
-    
-    LCD_DC_SET;
-    LCD_CS_CLR;
-    
-    for(int i=0; i<61*41; i++) {
-      LCD_WR_DATA_16(0x0000);  // 使用已声明的函数替代直接调用LCD_SPI_WriteByte
-    }
-    
-    LCD_CS_SET;
+    LCD_Fill(0, 0, 128, 160, BLUE);
     HAL_Delay(1000);
+    LCD_Fill(0, 0, 128, 160, GREEN);
+
+
+
     
-    // 注释掉这行，因为我们希望保持显示结果
-    // LCD_Clear(WHITE);
+    // // 画一个红色矩形
+    // LCD_DrawRectangle_Color(20, 20, 100, 100, RED);
+    // HAL_Delay(1000);
+    
+    // // 画一个蓝色圆
+    // Draw_Circle(60, 60, 30, BLUE);
+    // HAL_Delay(1000);
+    //
+    // // 填充一个绿色点
+    // LCD_Fill(55, 55, 65, 65, GREEN);
+    // HAL_Delay(1000);
+    //
+    // // 显示字符串
+    // LCD_ShowString(10, 120, (uint8_t *)"Hello STM32!", RED, WHITE, 16, 0);
+    // HAL_Delay(1000);
+    // LCD_Fill(0, 0, 128, 160, RED);
+    // HAL_Delay(5000);
+    //
+    // // 显示中文(如果定义了字体)
+    // #if defined(HAS_FONT16)
+    // LCD_ShowChinese(10, 140, (uint8_t *)"你好世界", BLUE, WHITE, 16, 0);
+    // #endif
     // HAL_Delay(1000);
   }
   /* USER CODE END 3 */
