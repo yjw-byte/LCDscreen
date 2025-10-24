@@ -113,20 +113,27 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    // 在屏幕中央显示一个彩色方块
+    // 先清屏为白色
+    LCD_Clear(WHITE);
+    HAL_Delay(1000);
+    
+    // 在屏幕中央显示一个黑色方块
     LCD_SetWindows(30, 60, 90, 100);
+    // LCD_WriteRAM_Prepare();  // 不需要重复调用，因为LCD_SetWindows中已经调用了
+    
     LCD_DC_SET;
     LCD_CS_CLR;
     
-    for(int i=0; i<40*40; i++) {
+    for(int i=0; i<61*41; i++) {
       LCD_WR_DATA_16(0x0000);  // 使用已声明的函数替代直接调用LCD_SPI_WriteByte
     }
     
     LCD_CS_SET;
     HAL_Delay(1000);
     
-    LCD_Clear(WHITE);
-    HAL_Delay(1000);
+    // 注释掉这行，因为我们希望保持显示结果
+    // LCD_Clear(WHITE);
+    // HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }
