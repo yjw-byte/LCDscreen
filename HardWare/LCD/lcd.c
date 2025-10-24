@@ -161,21 +161,26 @@ void LCD_Init_HAL(void)
     // 打开背光
     HAL_GPIO_WritePin(BL_GPIO_Port, BL_Pin, GPIO_PIN_SET);
 }
-
-// 设置窗口区域（合并了原来的LCD_SetCursor和LCD_SetWindows功能）
 static void LCD_SetWindow(uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint16_t yEnd)
 {
-    LCD_WR_REG(0x2A);   // 设置X坐标
-    LCD_WR_DATA(xStart >> 8);
-    LCD_WR_DATA(0xFF & xStart);
-    LCD_WR_DATA(xEnd >> 8);
-    LCD_WR_DATA(0xFF & xEnd);
+    xStart += 2;      // ST7735 128x160 屏的横向偏移
+    xEnd   += 2;
+    yStart += 1;      // 纵向偏移
+    yEnd   += 1;
 
-    LCD_WR_REG(0x2B);   // 设置Y坐标
+    LCD_WR_REG(0x2A);   // CASET
+    LCD_WR_DATA(xStart >> 8);
+    LCD_WR_DATA(xStart & 0xFF);
+    LCD_WR_DATA(xEnd >> 8);
+    LCD_WR_DATA(xEnd & 0xFF);
+
+    LCD_WR_REG(0x2B);   // RASET
     LCD_WR_DATA(yStart >> 8);
-    LCD_WR_DATA(0xFF & yStart);
+    LCD_WR_DATA(yStart & 0xFF);
     LCD_WR_DATA(yEnd >> 8);
-    LCD_WR_DATA(0xFF & yEnd);
+    LCD_WR_DATA(yEnd & 0xFF);
+
+    LCD_WR_REG(0x2C);   // 开始写 RAM
 }
 
 // 设置光标位置
