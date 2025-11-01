@@ -83,6 +83,21 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+// 按钮事件处理函数
+static void btn_event_cb(lv_event_t * e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t * btn = lv_event_get_target(e);
+    if(code == LV_EVENT_CLICKED) {
+        static uint8_t cnt = 0;
+        cnt++;
+        
+        /*获取按钮上的标签*/
+        lv_obj_t * label = lv_obj_get_child(btn, 0);
+        lv_label_set_text_fmt(label, "Button: %d", cnt);
+    }
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -124,21 +139,81 @@ int main(void)
   lv_init();
   lv_port_disp_init();
   LCD_Fill(0, 0, 128, 160, WHITE);
-  //LCD_ShowPicture(65,80,40,40,gImage_1);
+  
+  // 创建屏幕和基本控件
+  lv_obj_t * scr = lv_scr_act();
+  lv_obj_set_style_bg_color(scr, lv_color_hex(0x003a57), 0);
+  
+  // 创建标签
+  lv_obj_t * label = lv_label_create(scr);
+  lv_label_set_text(label, "Hello LVGL!");
+  lv_obj_align(label, LV_ALIGN_TOP_MID, 0, 5);
+  
+  // 创建按钮
+  lv_obj_t * btn = lv_btn_create(scr);
+  lv_obj_set_size(btn, 80, 30);
+  lv_obj_align(btn, LV_ALIGN_TOP_MID, 0, 25);
+  lv_obj_add_event_cb(btn, btn_event_cb, LV_EVENT_ALL, NULL);
+  
+  // 为按钮添加标签
+  lv_obj_t * btn_label = lv_label_create(btn);
+  lv_label_set_text(btn_label, "Button");
+  lv_obj_center(btn_label);
+  
+  // 创建进度条
+  lv_obj_t * bar1 = lv_bar_create(scr);
+  lv_obj_set_size(bar1, 100, 10);
+  lv_obj_align(bar1, LV_ALIGN_TOP_MID, 0, 65);
+  lv_bar_set_value(bar1, 70, LV_ANIM_OFF);
+  
+  // 创建滑块
+  lv_obj_t * slider = lv_slider_create(scr);
+  lv_obj_set_width(slider, 100);
+  lv_obj_align(slider, LV_ALIGN_TOP_MID, 0, 85);
+  lv_slider_set_value(slider, 50, LV_ANIM_OFF);
+  
+  // 创建另一个标签显示数值
+  lv_obj_t * value_label = lv_label_create(scr);
+  lv_label_set_text(value_label, "Value: 50");
+  lv_obj_align(value_label, LV_ALIGN_TOP_MID, 0, 105);
+  
+  // 创建复选框
+  lv_obj_t * cb = lv_checkbox_create(scr);
+  lv_checkbox_set_text(cb, "Checkbox");
+  lv_obj_align(cb, LV_ALIGN_TOP_MID, 0, 125);
   
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  uint32_t last_update = 0;
+  int16_t progress = 0;
+  int8_t progress_direction = 1;
+  
   while (1)
   {
-    for(uint8_t i=0;i<sizeof(color_palette)/sizeof(color_palette[0]);i++)
-    {
-      LCD_Fill(0,0,128,160,color_palette[i]);
-      HAL_Delay(500);
+    // 更新进度条动画
+    uint32_t current_time = HAL_GetTick();
+    if(current_time - last_update > 50) { // 每50ms更新一次
+        last_update = current_time;
+        
+        // 更新进度条
+        progress += progress_direction * 2;
+        if(progress >= 100) {
+            progress = 100;
+            progress_direction = -1;
+        } else if(progress <= 0) {
+            progress = 0;
+            progress_direction = 1;
+        }
+        lv_bar_set_value(bar1, progress, LV_ANIM_OFF);
+        
+        // 更新数值标签
+        lv_label_set_text_fmt(value_label, "Value: %d", lv_slider_get_value(slider));
     }
-
-
+    
+    lv_task_handler();
+    HAL_Delay(5);
 
     /* USER CODE END WHILE */
 
