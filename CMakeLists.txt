@@ -12,6 +12,8 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS ON)
 
+file(GLOB_RECURSE LVGL_SOURCES lvgl-8.0.2-core/src/*.c)# Add LVGL source files
+
 
 # Define the build type
 if(NOT CMAKE_BUILD_TYPE)
@@ -48,6 +50,7 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined sources here
         HardWare/LCD/lcd.c
+        lvgl-8.0.2-core/examples/porting/lv_port_disp.c
 
 )
 
@@ -55,11 +58,15 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
         HardWare/LCD
+        lvgl-8.0.2-core
+        lvgl-8.0.2-core/src
+        lvgl-8.0.2-core/examples/porting
 )
 
 # Add project symbols (macros)
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined symbols
+
 )
 
 # Remove wrong libob.a library dependency when using cpp files
