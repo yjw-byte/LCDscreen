@@ -8,13 +8,13 @@
 #define LCD_DATA 1
 
 // 通过SPI写8位数据
-static void LCD_SPI_WriteByte(uint8_t data)
+void LCD_SPI_WriteByte(uint8_t data)
 {
     HAL_SPI_Transmit(&hspi2, &data, 1, 1000);
 }
 
 // 写命令到LCD
-static void LCD_WR_REG(uint8_t regval)
+ void LCD_WR_REG(uint8_t regval)
 {
     HAL_GPIO_WritePin(DC_GPIO_Port, DC_Pin, GPIO_PIN_RESET); // 写命令
     HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_RESET); // 选中LCD
@@ -23,7 +23,7 @@ static void LCD_WR_REG(uint8_t regval)
 }
 
 // 写数据到LCD
-static void LCD_WR_DATA(uint8_t data)
+void LCD_WR_DATA(uint8_t data)
 {
     HAL_GPIO_WritePin(DC_GPIO_Port, DC_Pin, GPIO_PIN_SET);   // 写数据
     HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_RESET); // 选中LCD
@@ -32,19 +32,15 @@ static void LCD_WR_DATA(uint8_t data)
 }
 
 // 写16位数据到LCD
-static void LCD_WR_DATA_16(uint16_t data)
+void LCD_WR_DATA_16(uint16_t data)
 {
     LCD_WR_DATA(data >> 8);
     LCD_WR_DATA(data & 0xFF);
 }
-static void LCD_WR_Color(uint16_t data) {
-    uint8_t buf[2] = {data>>8, data&0xFF};
-    HAL_SPI_Transmit(&hspi2, buf, 2, 1000);
-}
 
 
 // LCD复位
-static void LCD_Reset(void)
+void LCD_Reset(void)
 {
     HAL_GPIO_WritePin(RST_GPIO_Port, RST_Pin, GPIO_PIN_RESET);
     HAL_Delay(100);
@@ -161,7 +157,7 @@ void LCD_Init_HAL(void)
     // 打开背光
     HAL_GPIO_WritePin(BL_GPIO_Port, BL_Pin, GPIO_PIN_SET);
 }
-static void LCD_SetWindow(uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint16_t yEnd)
+void LCD_SetWindow(uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint16_t yEnd)
 {
     xStart += 2;      // ST7735 128x160 屏的横向偏移
     xEnd   += 2;
@@ -184,14 +180,14 @@ static void LCD_SetWindow(uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint1
 }
 
 // 设置光标位置
-static void LCD_SetCursor(uint16_t Xpos, uint16_t Ypos)
+ void LCD_SetCursor(uint16_t Xpos, uint16_t Ypos)
 {
     LCD_SetWindow(Xpos, Ypos, Xpos, Ypos);
     LCD_WR_REG(0x2C);    // 开始写入GRAM
 }
 
 // 设置窗口
-static void LCD_SetWindows(uint16_t xStar, uint16_t yStar, uint16_t xEnd, uint16_t yEnd)
+void LCD_SetWindows(uint16_t xStar, uint16_t yStar, uint16_t xEnd, uint16_t yEnd)
 {
     LCD_SetWindow(xStar, yStar, xEnd, yEnd);
     LCD_WR_REG(0x2C);   // 写入RAM

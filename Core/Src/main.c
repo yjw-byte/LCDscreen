@@ -24,6 +24,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "lcd.h"
+#include "pic.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -33,6 +34,29 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+uint16_t color_palette[] = {
+  0xFFFF, // WHITE
+  0x0000, // BLACK
+  0x001F, // BLUE
+  0xF81F, // BRED
+  0xFFE0, // GRED
+  0x07FF, // GBLUE
+  0xF800, // RED
+  0xF81F, // MAGENTA
+  0x07E0, // GREEN
+  0x7FFF, // CYAN
+  0xFFE0, // YELLOW
+  0xBC40, // BROWN
+  0xFC07, // BRRED
+  0x8430, // GRAY
+  0x01CF, // DARKBLUE
+  0x7D7C, // LIGHTBLUE
+  0x5458, // GRAYBLUE
+  0x841F, // LIGHTGREEN
+  0xC618, // LGRAY
+  0xA651, // LGRAYBLUE
+  0x2B12  // LBBLUE
+};
 
 /* USER CODE END PD */
 
@@ -93,6 +117,7 @@ int main(void)
   // 初始化LCD
   LCD_Init_HAL();
   LCD_Fill(0, 0, 128, 160, WHITE);
+  LCD_ShowPicture(65,80,40,40,gImage_1);
   
   /* USER CODE END 2 */
 
@@ -100,17 +125,43 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    for(uint8_t i=0;i<sizeof(color_palette)/sizeof(color_palette[0]);i++)
+    {
+      LCD_Fill(0,0,128,160,color_palette[i]);
+      HAL_Delay(500);
+    }
+    HAL_GPIO_WritePin(GPIOA,GPIO_PIN_0,GPIO_PIN_SET);// PA0置高
+    HAL_Delay(500);
+    HAL_GPIO_WritePin(GPIOA,GPIO_PIN_0,GPIO_PIN_RESET);// PA0置低
+    // 显示中文字符串"STM32"
+    LCD_ShowChinese(1, 1, (uint8_t *)"STM32", RED, WHITE, 16, 0);
+    HAL_Delay(500);
+
+    // 在相同位置显示字符'A'
+    LCD_ShowChar(1, 1, (uint8_t)'A', BLUE, WHITE, 16, 0);
+    HAL_Delay(500);
+
+    // 在相同位置显示整数123456，显示宽度为8位
+    LCD_ShowIntNum(1, 1, (uint16_t)123456, 8, BLUE, WHITE, 16);
+    HAL_Delay(500);
+
+
+
+
+
+
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
     // 测试我们新编写的HAL库函数
     
     // 清屏为白色
-    LCD_Fill(0, 0, 128, 160, RED);
-    HAL_Delay(1000);
-    LCD_Fill(0, 0, 128, 160, BLUE);
-    HAL_Delay(1000);
-    LCD_Fill(0, 0, 128, 160, GREEN);
+    // LCD_Fill(0, 0, 128, 160, RED);
+    // HAL_Delay(1000);
+    // LCD_Fill(0, 0, 128, 160, BLUE);
+    // HAL_Delay(1000);
+    // LCD_Fill(0, 0, 128, 160, GREEN);
 
 
 
