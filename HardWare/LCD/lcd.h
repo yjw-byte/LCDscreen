@@ -23,7 +23,11 @@ uint32_t mypow(uint8_t m, uint8_t n);
 void LCD_ShowIntNum(uint16_t x, uint16_t y, uint16_t num, uint8_t len, uint16_t fc, uint16_t bc, uint8_t sizey);
 void LCD_ShowFloatNum1(uint16_t x, uint16_t y, float num, uint8_t len, uint16_t fc, uint16_t bc, uint8_t sizey);
 void LCD_ShowPicture(uint16_t x, uint16_t y, uint16_t length, uint16_t width, const uint8_t pic[]);
-void LCD_WR_DATA_Array(uint8_t *data, uint16_t len); // 添加这个函数声明
+void LCD_WR_DATA_Array(uint8_t *data, uint16_t len);
+
+// 添加缺失的函数声明
+void LCD_SetWindows(uint16_t xStar, uint16_t yStar, uint16_t xEnd, uint16_t yEnd);
+void LCD_WR_DATA_16(uint16_t data);
 
 //画笔颜色
 #define WHITE         	 0xFFFF

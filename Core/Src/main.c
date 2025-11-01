@@ -26,6 +26,8 @@
 /* USER CODE BEGIN Includes */
 #include "lcd.h"
 #include "pic.h"
+#include "lvgl.h"
+#include "lv_port_disp.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
