@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "spi.h"
+#include "tim.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -112,12 +113,14 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_SPI2_Init();
+  MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
   
   // 初始化LCD
   LCD_Init_HAL();
+  HAL_TIM_Base_Start_IT(&htim6); // 启动定时器6，用于LCD延时
   LCD_Fill(0, 0, 128, 160, WHITE);
-  LCD_ShowPicture(65,80,40,40,gImage_1);
+  //LCD_ShowPicture(65,80,40,40,gImage_1);
   
   /* USER CODE END 2 */
 
@@ -130,65 +133,12 @@ int main(void)
       LCD_Fill(0,0,128,160,color_palette[i]);
       HAL_Delay(500);
     }
-    HAL_GPIO_WritePin(GPIOA,GPIO_PIN_0,GPIO_PIN_SET);// PA0置高
-    HAL_Delay(500);
-    HAL_GPIO_WritePin(GPIOA,GPIO_PIN_0,GPIO_PIN_RESET);// PA0置低
-    // 显示中文字符串"STM32"
-    LCD_ShowChinese(1, 1, (uint8_t *)"STM32", RED, WHITE, 16, 0);
-    HAL_Delay(500);
-
-    // 在相同位置显示字符'A'
-    LCD_ShowChar(1, 1, (uint8_t)'A', BLUE, WHITE, 16, 0);
-    HAL_Delay(500);
-
-    // 在相同位置显示整数123456，显示宽度为8位
-    LCD_ShowIntNum(1, 1, (uint16_t)123456, 8, BLUE, WHITE, 16);
-    HAL_Delay(500);
-
-
-
-
 
 
 
     /* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
-    // 测试我们新编写的HAL库函数
-    
-    // 清屏为白色
-    // LCD_Fill(0, 0, 128, 160, RED);
-    // HAL_Delay(1000);
-    // LCD_Fill(0, 0, 128, 160, BLUE);
-    // HAL_Delay(1000);
-    // LCD_Fill(0, 0, 128, 160, GREEN);
 
-
-
-    
-    // // 画一个红色矩形
-    // LCD_DrawRectangle_Color(20, 20, 100, 100, RED);
-    // HAL_Delay(1000);
-    
-    // // 画一个蓝色圆
-    // Draw_Circle(60, 60, 30, BLUE);
-    // HAL_Delay(1000);
-    //
-    // // 填充一个绿色点
-    // LCD_Fill(55, 55, 65, 65, GREEN);
-    // HAL_Delay(1000);
-    //
-    // // 显示字符串
-    // LCD_ShowString(10, 120, (uint8_t *)"Hello STM32!", RED, WHITE, 16, 0);
-    // HAL_Delay(1000);
-    // LCD_Fill(0, 0, 128, 160, RED);
-    // HAL_Delay(5000);
-    //
-    // // 显示中文(如果定义了字体)
-    // #if defined(HAS_FONT16)
-    // LCD_ShowChinese(10, 140, (uint8_t *)"你好世界", BLUE, WHITE, 16, 0);
-    // #endif
-    // HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }
@@ -239,6 +189,12 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  if (htim->Instance == TIM6) {
+    lv_tick_inc(1);  // 每毫秒加 1
+  }
+}
 
 /* USER CODE END 4 */
 
