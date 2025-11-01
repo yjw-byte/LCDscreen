@@ -121,6 +121,8 @@ int main(void)
   // 初始化LCD
   LCD_Init_HAL();
   HAL_TIM_Base_Start_IT(&htim6); // 启动定时器6，用于LCD延时
+  lv_init();
+  lv_port_disp_init();
   LCD_Fill(0, 0, 128, 160, WHITE);
   //LCD_ShowPicture(65,80,40,40,gImage_1);
   
