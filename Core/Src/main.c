@@ -142,8 +142,8 @@ int main(void)
   
   // 创建屏幕和基本控件
   lv_obj_t * scr = lv_scr_act();
-  lv_obj_set_style_bg_color(scr, lv_color_white(), 0);
-  
+  lv_obj_set_style_bg_color(scr, lv_palette_main(LV_PALETTE_YELLOW), 0);
+
   // 创建标签
   lv_obj_t * label = lv_label_create(scr);
   lv_label_set_text(label, "Hello LVGL!");
